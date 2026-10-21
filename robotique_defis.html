@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Robotique — Défis du club</title>
+<style>
+:root{--bg:#080b14;--panel:#101727;--panel2:#131e32;--cyan:#4dfcff;--pink:#ff4fd8;--green:#8bffb7;--text:#edf7ff;--muted:#9aacc4;--line:#24354e}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 15% 0%,#14254a 0,transparent 42%),radial-gradient(ellipse at 100% 25%,#29143a 0,transparent 32%),var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.6}
+header{padding:54px 20px 38px;text-align:center;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+header:after{content:"";position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),var(--pink),transparent)}
+.kicker{color:var(--cyan);letter-spacing:.22em;text-transform:uppercase;font-size:.76rem;font-weight:800}
+h1{font-size:clamp(2.2rem,6vw,4.6rem);line-height:1.05;margin:12px 0;background:linear-gradient(90deg,#fff,var(--cyan),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 35px #4dfcff24}
+header p{max-width:700px;margin:16px auto;color:var(--muted)}
+.help-link{display:inline-block;margin-top:8px;color:var(--cyan);font-weight:800;text-decoration:none;border:1px solid #4dfcff66;border-radius:10px;padding:8px 13px;background:#4dfcff0b}
+.help-link:hover{color:#fff;border-color:var(--pink);box-shadow:0 0 16px #ff4fd833}
+.wrap{width:min(1120px,92%);margin:0 auto}
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:20px 0}
+.progress-box{flex:1;min-width:230px;color:var(--muted);font-size:.9rem}
+.progress-track{height:7px;background:#1c2940;border-radius:99px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--pink));box-shadow:0 0 14px var(--cyan);transition:width .25s}
+button{cursor:pointer;border:1px solid #35506c;border-radius:10px;background:#101b2d;color:var(--text);padding:10px 14px;font-weight:700;transition:.2s}
+button:hover{border-color:var(--cyan);box-shadow:0 0 16px #4dfcff20;transform:translateY(-1px)}
+button.reset{border-color:#75466f;color:#ffb6f0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:18px;padding:12px 0 42px}
+.card{background:linear-gradient(145deg,#121c2eec,#0d1321f2);border:1px solid var(--line);border-radius:18px;padding:22px;position:relative;overflow:hidden;box-shadow:0 12px 35px #0003;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:#426780}
+.card:before{content:"";position:absolute;top:0;left:22px;right:22px;height:2px;background:linear-gradient(90deg,var(--cyan),transparent)}
+.card.done{border-color:#3c9d78;background:linear-gradient(145deg,#102a28,#0d1721)}
+.card.done:before{background:linear-gradient(90deg,var(--green),transparent)}
+.card-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+.num{font-size:.75rem;color:var(--cyan);letter-spacing:.12em;font-weight:800}
+.badge{font-size:.72rem;border:1px solid #3c5972;border-radius:99px;padding:4px 9px;color:#c5d8eb;white-space:nowrap}
+h2{font-size:1.25rem;line-height:1.3;margin:15px 0 8px}
+h3{color:var(--cyan);font-size:.9rem;margin:17px 0 4px}
+p{margin:6px 0;color:#d6e2f0}
+ul{padding-left:20px;margin:7px 0;color:#c6d5e7}
+li{margin:4px 0}
+.checkrow{display:flex;align-items:center;gap:9px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line);color:var(--green);font-weight:700}
+input[type=checkbox]{accent-color:#4dfcff;width:18px;height:18px;cursor:pointer}
+footer{text-align:center;padding:28px 15px 42px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
+footer span{color:var(--pink)}
+.note{border:1px solid #2c4260;border-radius:14px;padding:15px 18px;background:#0d1626;color:var(--muted);margin-bottom:30px}
+.note strong{color:var(--cyan)}
+@media(max-width:500px){header{padding-top:40px}.card{padding:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Club robotique · Missions Python</div>
+  <h1>ROBOTIQUE</h1>
+  <p>Pour t’aider à réaliser les défis, tu peux consulter ce site :<br><a class="help-link" href="https://samdelerm.github.io/rsk-pour-les-nuls.github.io/index.html" target="_blank" rel="noopener noreferrer">Ouvrir le guide RSK pour les nuls ↗</a></p>
+</header>
+<main class="wrap">
+  <div class="toolbar">
+    <div class="progress-box">
+      <div><strong id="progressText">0 / 8 défis terminés</strong> <span id="progressPercent">· 0 %</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+    <button id="expandBtn" type="button">Tout déplier</button>
+    <button class="reset" id="resetBtn" type="button">Réinitialiser</button>
+  </div>
+  <div class="note"><strong>Objectif du parcours :</strong> suivre les positions, déplacer et orienter les robots, agir sur la balle, défendre le but et réunir toutes les compétences dans un programme complet.</div>
+  <section class="grid" id="challenges">
+    <article class="card" id="defi-1">
+      <div class="card-top"><span class="num">DÉFI 01</span><span class="badge">Observation</span></div>
+      <h2>📡 Suivi des robots et de leurs coordonnées</h2>
+      <p>Localiser et afficher les coordonnées des quatre robots présents sur le terrain : Bleu 1, Bleu 2, Vert 1 et Vert 2.</p>
+      <h3>🎯 Objectif à atteindre</h3><p>Suivre avec précision la position et les déplacements de chaque robot.</p>
+      <h3>🧩 Défi technique</h3><ul><li>Récupérer les coordonnées X et Y de chaque robot.</li><li>Actualiser régulièrement les données.</li><li>Afficher les positions de façon claire et organisée.</li></ul>
+      <label class="checkrow"><input class="done-check" type="checkbox"> Défi terminé</label>
+    </article>
+    <article class="card" id="defi-2">
+      <div class="card-top"><span class="num">DÉFI 02</span><span class="badge">Détection</span></div>
+      <h2>🎯 Suivi de la balle en temps réel</h2>
+      <p>Détecter la position de la balle qui se déplace sur le terrain et afficher ses coordonnées.</p>
+      <h3>🎯 Objectif à atteindre</h3><p>Connaître la position de la balle et suivre son évolution en temps réel.</p>
+      <h3>🧩 Défi technique</h3><ul><li>Récupérer les coordonnées X et Y de la balle.</li><li>Actualiser les informations régulièrement.</li><li>Présenter les données lisiblement avec celles des robots.</li></ul>
+      <label class="checkrow"><input class="done-check" type="checkbox"> Défi terminé</label>
+    </article>
+    <article class="card" id="defi-3">
+      <div class="card-top"><span class="num">DÉFI 03</span><span class="badge">Déplacement</span></div>
+      <h2>🧭 Aller au centre du terrain avec <code>goto</code></h2>
+      <p>Programmer en Python le déplacement d’un robot jusqu’au centre du terrain.</p>
+      <h3>🎯 Objectif à atteindre</h3><p>Atteindre les coordonnées X et Y correspondant au centre du terrain.</p>
+      <h3>🧩 Défi technique</h3><ul><li>Utiliser la fonction <code>goto(x, y)</code>.</li><li>Transmettre les coordonnées du point à atteindre.</li><li>Vérifier que le robot arrive à la position souhaitée.</li></ul>
+      <label class="checkrow"><input class="done-check" type="checkbox"> Défi terminé</label>
+    </article>
+    <article class="card" id="defi-4">
+      <div class="card-top"><span class="num">DÉFI 04</span><span class="badge">Orientation · Math</span></div>
+      <h2>🔄 Enchaîner trois rotations</h2>
+      <p>Faire effectuer au robot plusieurs rotations en partant de son orientation angulaire actuelle.</p>
+      <h3>🎯 Objectif à atteindre</h3><p>Effectuer successivement une rotation de 90°, puis 45°, puis 180°.</p>
+      <h3>🧩 Défi technique</h3><ul><li>Importer le module <code>math</code>.</li><li>Définir les angles en degrés.</li><li>Convertir chaque angle avec <code>math.radians()</code>.</li><li>Commander les rotations dans le bon ordre.</li></ul>
+      <h3>👁️ Vérification</h3><p>Vérifier l’ordre des rotations et la conversion en radians avant chaque commande.</p>
+      <label class="checkrow"><input class="done-check" type="checkbox"> Défi terminé</label>
+    </article>
+    <article class="card" id="defi-5">
+      <div class="card-top"><span class="num">DÉFI 05</span><span class="badge">Trajectoire</span></div>
+      <h2>🌀 Faire le tour du terrain en regardant où l’on va</h2>
+      <p>Programmer un robot pour parcourir tout le contour du terrain en adaptant son orientation à ses déplacements.</p>
+      <h3>🎯 Objectif à atteindre</h3><p>Passer par les différents angles, rester orienté dans la direction du déplacement et revenir au point de départ.</p>
+      <h3>🧩 Défi technique</h3><ul><li>Utiliser <code>goto(x, y)</code> pour chaque point du contour.</li><li>Visiter les points dans le bon ordre.</li><li>Importer <code>math</code> et calculer l’angle vers le prochain point.</li><li>Mettre à jour l’orientation en utilisant les radians.</li></ul>
+      <h3>👁️ Vérification</h3><p>Confirmer que chaque point est atteint, que le robot suit le contour et revient au départ.</p>
+      <label class="checkrow"><input class="done-check" type="checkbox"> Défi terminé</label>
+    </article>
+    <article class="card" id="defi-6">
+      <div class="card-top"><span class="num">DÉFI 06</span><span class="badge">Attaque</span></div>
+      <h2>⚽ Rejoindre la balle et la frapper</h2>
+      <p>Déplacer le robot jusqu’à une position située devant la balle pour pouvoir la frapper.</p>
+      <h3>🎯 Objectif à atteindre</h3><p>Se diriger vers la balle, se placer correctement devant elle, puis la propulser dans la direction souhaitée.</p>
+      <h3>🧩 Défi technique</h3><ul><li>Récupérer les coordonnées X et Y de la balle.</li><li>Utiliser <code>goto(x, y)</code> pour rejoindre une position devant la balle.</li><li>Déclencher la fonction <code>kick()</code> une fois en position.</li></ul>
+      <h3>👁️ Vérification</h3><p>Vérifier que le robot est bien placé avant la frappe et que la balle part dans la direction voulue.</p>
+      <label class="checkrow"><input class="done-check" type="checkbox"> Défi terminé</label>
+    </article>
+    <article class="card" id="defi-7">
+      <div class="card-top"><span class="num">DÉFI 07</span><span class="badge">Défense</span></div>
+      <h2>🛡️ Créer un défenseur qui suit la balle sur Y</h2>
+      <p>Programmer un robot défenseur qui suit les déplacements de la balle sur l’axe Y afin de protéger son but.</p>
+      <h3>🎯 Objectif à atteindre</h3><p>Garder la coordonnée <code>X = 0.92</code> et aligner exactement la coordonnée Y du défenseur sur celle de la balle.</p>
+      <h3>🧩 Défi technique</h3><ul><li>Utiliser <code>goto(x, y)</code>.</li><li>Conserver X à <code>0.92</code> en permanence.</li><li>Mettre Y à jour pour qu’elle soit égale à la coordonnée Y de la balle.</li><li>Actualiser le suivi et respecter les limites du terrain.</li></ul>
+      <label class="checkrow"><input class="done-check" type="checkbox"> Défi terminé</label>
+    </article>
+    <article class="card" id="defi-8">
+      <div class="card-top"><span class="num">DÉFI FINAL</span><span class="badge">Mission complète</span></div>
+      <h2>🚀 Réunir toutes les compétences dans un programme</h2>
+      <p>Créer un programme Python complet qui réutilise les notions apprises pendant les missions précédentes et réagit aux déplacements de la balle.</p>
+      <h3>🎯 Objectif à atteindre</h3><p>Détecter la balle, déplacer intelligemment le robot et réaliser les actions nécessaires pendant le jeu.</p>
+      <h3>🧩 Défi technique</h3><ul><li>Récupérer et afficher les coordonnées du robot et de la balle.</li><li>Déplacer le robot avec <code>goto(x, y)</code>.</li><li>Orienter le robot dans la direction voulue en utilisant les angles.</li><li>Rejoindre la balle et la frapper.</li><li>Pour le défenseur, garder X = 0.92 et suivre exactement Y de la balle.</li></ul>
+      <h3>👁️ Contrôle final</h3><p>Vérifier que toutes les actions fonctionnent et correspondent à la situation de jeu. Dernière étape : affronter un programme à demander au professeur.</p>
+      <label class="checkrow"><input class="done-check" type="checkbox"> Défi terminé</label>
+    </article>
+  </section>
+</main>
+<footer>Construit pour le <span>Club Robotique</span> · Code, précision et néons ✦</footer>
+<script>
+const checks=[...document.querySelectorAll('.done-check')];
+const key='robotique-progress-v1';
+function update(){
+  const n=checks.filter(c=>c.checked).length, total=checks.length, pct=Math.round(n/total*100);
+  document.getElementById('progressText').textContent=`${n} / ${total} défis terminés`;
+  document.getElementById('progressPercent').textContent=`· ${pct} %`;
+  document.getElementById('progressFill').style.width=pct+'%';
+  checks.forEach(c=>c.closest('.card').classList.toggle('done',c.checked));
+  try{localStorage.setItem(key,JSON.stringify(checks.map(c=>c.checked)))}catch(e){}
+}
+try{const saved=JSON.parse(localStorage.getItem(key)||'[]');checks.forEach((c,i)=>c.checked=!!saved[i])}catch(e){}
+checks.forEach(c=>c.addEventListener('change',update));
+update();
+let expanded=false;
+document.getElementById('expandBtn').addEventListener('click',()=>{
+  expanded=!expanded;
+  document.querySelectorAll('.card h3,.card h2,.card p,.card ul,.card .checkrow').forEach(el=>el.style.display='');
+  document.getElementById('expandBtn').textContent=expanded?'Tout est visible':'Tout déplier';
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(confirm('Réinitialiser la progression de tous les défis ?')){
+    checks.forEach(c=>c.checked=false);update();
+  }
+});
+</script>
+</body>
+</html>
